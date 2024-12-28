@@ -1,0 +1,38 @@
+name: Build Mod
+
+on:
+  workflow_dispatch: # Allows manual triggering
+  push:
+    branches:
+      - main # Automatically trigger when pushing to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build the Mod
+        run: ./gradlew build
+
+      - name: Upload the Mod Jar
+        uses: actions/upload-artifact@v3
+        with:
+          name: mod-jar
+          path: build/libs/*.jar
