@@ -1,10 +1,10 @@
 name: Build Mod
 
 on:
-  workflow_dispatch: # Allows manual triggering
+  workflow_dispatch:
   push:
     branches:
-      - main # Automatically trigger when pushing to the main branch
+      - main
 
 jobs:
   build:
@@ -19,6 +19,9 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+
+      - name: Fix permissions for Gradle wrapper
+        run: chmod +x gradlew
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v3
